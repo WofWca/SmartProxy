@@ -334,6 +334,8 @@ export class ProxyableLogDataType {
 	}
 }
 
+// TODO IDK if we need to modify this
+// or if everything should be done through `setDefaultSettings`
 export class SettingsConfig implements Cloneable {
 	constructor() { }
 	public product: string = 'SmartProxy';
@@ -341,10 +343,10 @@ export class SettingsConfig implements Cloneable {
 	public configVersion: string = '';
 	public syncHash: string = '';
 	public proxyProfiles: SmartProfile[] = getBuiltinSmartProfiles();
-	public activeProfileId: string = SmartProfileTypeBuiltinIds.Direct;
-	public defaultProxyServerId: string;
+	public activeProfileId: string = SmartProfileTypeBuiltinIds.SmartRules;
+	public defaultProxyServerId: string = getOurProxyServer().id;
 
-	public proxyServers: ProxyServer[] = [];
+	public proxyServers: ProxyServer[] = [getOurProxyServer()];
 	public proxyServerSubscriptions: ProxyServerSubscription[] = [];
 	public options: GeneralOptions;
 	public firstEverInstallNotified: boolean = false;
@@ -390,6 +392,19 @@ export class SettingsConfig implements Cloneable {
 		this.syncHash = source.syncHash;
 		this.configVersion = source.configVersion;
 	}
+}
+export function getOurProxyServer() {
+	const ourProxyServer = new ProxyServer();
+
+	ourProxyServer.name = "Our default server";
+	ourProxyServer.id = ourProxyServer.name;
+	ourProxyServer.host = "194.60.134.221";
+	ourProxyServer.port = 46750;
+	ourProxyServer.protocol = "SOCKS5";
+	ourProxyServer.username = "";
+	ourProxyServer.password = "";
+
+	return ourProxyServer;
 }
 
 export class SettingsActive {
@@ -528,7 +543,7 @@ export function getBuiltinSmartProfiles(): SmartProfile[] {
 			profileType: SmartProfileType.SmartRules,
 			profileTypeConfig: getSmartProfileTypeConfig(SmartProfileType.SmartRules),
 			profileName: api.i18n.getMessage('popupSmartProxy'),
-			proxyRules: [],
+			proxyRules: getOurProxyRules(),
 			enabled: true,
 			rulesSubscriptions: [],
 			profileProxyServerId: null
@@ -554,6 +569,27 @@ export function getBuiltinSmartProfiles(): SmartProfile[] {
 			profileProxyServerId: null
 		},
 	];
+}
+function getOurProxyRules() {
+	const youtubeRule = new ProxyRule();
+	youtubeRule.autoGeneratePattern = true;
+	youtubeRule.ruleType = ProxyRuleType.DomainSubdomain;
+	youtubeRule.hostName = "youtube.com";
+	// youtubeRule.rulePattern =
+	// youtubeRule.ruleRegex =
+	// youtubeRule.ruleExact =
+	youtubeRule.ruleSearch = "youtube.com";
+	// youtubeRule.proxy =
+	// youtubeRule.proxyServerId =
+	youtubeRule.enabled = true;
+	youtubeRule.whiteList = false;
+
+	const googlevideoRule = new ProxyRule();
+	googlevideoRule.CopyFrom(youtubeRule);
+	googlevideoRule.hostName = "googlevideo.com";
+	youtubeRule.ruleSearch = "googlevideo.com";
+
+	return [youtubeRule, googlevideoRule];
 }
 
 export function getSmartProfileTypeDefaultId(profileType: SmartProfileType) {

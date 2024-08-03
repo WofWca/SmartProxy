@@ -31,7 +31,8 @@ import {
 	ProxyServerSubscription,
 	ProxyRule,
 	ProxyRulesSubscription,
-	ThemeType
+	ThemeType,
+	getOurProxyServer,
 } from './definitions';
 import { Debug } from '../lib/Debug';
 import { SettingsOperation } from './SettingsOperation';
@@ -157,10 +158,10 @@ export class Settings {
 		config.product = 'SmartProxy';
 		config.version = null;
 		if (config['activeProfileId'] == null) {
-			config.activeProfileId = SmartProfileTypeBuiltinIds.Direct;
+			config.activeProfileId = SmartProfileTypeBuiltinIds.SmartRules;
 		}
 		if (config['defaultProxyServerId'] == null) {
-			config.defaultProxyServerId = null;
+			config.defaultProxyServerId = getOurProxyServer().id;
 		}
 		if (config['options'] == null) {
 			config.options = new GeneralOptions();
@@ -175,9 +176,10 @@ export class Settings {
 			config.firstEverInstallNotified = false;
 		}
 		if (config['proxyServers'] == null || !Array.isArray(config.proxyServers)) {
-			config.proxyServers = [];
+			config.proxyServers = [getOurProxyServer()];
 		}
 		if (config['proxyProfiles'] == null || !Array.isArray(config.proxyProfiles)) {
+			// We modified `getBuiltinSmartProfiles()`
 			config.proxyProfiles = getBuiltinSmartProfiles();
 		}
 		else

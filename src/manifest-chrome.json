@@ -1,9 +1,9 @@
 {
-	"name": "__MSG_extensionName__",
+	"name": "Обойти замедление YouTube",
 	"version": "1.5",
 	"manifest_version": 3,
 	"author": "Salar Khalilzadeh",
-	"description": "__MSG_extensionDescription__",
+	"description": "Обойдите замедление YouTube и ускорьте Ютуб в России. Наслаждайтесь высоким качеством видео без задержек и буферизации.",
 	"homepage_url": "https://github.com/salarcode/SmartProxy",
 	"default_locale": "en",
 	"icons": {
@@ -14,22 +14,15 @@
 		"128": "icons/smartproxy-128.png"
 	},
 	"permissions": [
-		"activeTab",
-		"tabs",
 		"proxy",
 		"webRequest",
 		"webRequestAuthProvider",
-		"storage",
-		"unlimitedStorage",
-		"notifications"
+		"storage"
 	],
 	"host_permissions": [
-		"<all_urls>"
+		"https://www.youtube.com/"
 	],
 	"action": {
-		"browser_style": true,
-		"default_title": "__MSG_extensionName__",
-		"default_popup": "ui/popup.html",
 		"default_icon": {
 			"16": "icons/smartproxy-16.png",
 			"24": "icons/smartproxy-24.png",
@@ -40,40 +33,6 @@
 	},
 	"background": {
 		"service_worker": "core.js"
-	},
-	"options_ui": {
-		"page": "ui/settings.html",
-		"open_in_tab": true
-	},
-	"commands": {
-		"next-proxy-server": {
-			"suggested_key": { 
-				"default": "Ctrl+Shift+Period",
-				"mac": "Command+Shift+Period"
-			},
-			"description": "Switch to next proxy server as the active proxy"
-		},
-		"proxy-mode-none": {
-			"suggested_key": {
-				"default": "Ctrl+Shift+1",
-				"mac": "Command+Shift+1"
-			},
-			"description": "Switch to 'No Proxy' mode"
-		},
-		"proxy-mode-smart": {
-			"suggested_key": {
-				"default": "Ctrl+Shift+2",
-				"mac": "Command+Shift+2"
-			},
-			"description": "Switch to 'Smart Proxy' mode"
-		},
-		"proxy-mode-always": {
-			"suggested_key": {
-				"default": "Ctrl+Shift+3",
-				"mac": "Command+Shift+0"
-			},
-			"description": "Switch to 'Always Enabled' mode"
-		}
 	},
 	"minimum_chrome_version": "100"
 }
