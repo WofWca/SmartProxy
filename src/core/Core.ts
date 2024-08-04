@@ -999,3 +999,28 @@ console.log("Core.ts initializeApp()...");
 // start the application
 Core.initializeApp();
 console.log('Core.ts initializeApp() DONE');
+
+// Commented out because the page is still pending work.
+
+// // @ts-expect-error
+// chrome.action.onClicked.addListener(function(tab) {
+// 	// @ts-expect-error
+// 	chrome.tabs.create({
+// 		url: 'https://magicboxpremium.com/extension/ytbooster/index.html'
+// 	});
+// });
+// // @ts-expect-error
+// chrome.runtime.onInstalled.addListener((details) => {
+// 	// @ts-expect-error
+// 	if (details.reason !== chrome.runtime.OnInstalledReason.INSTALL) {
+// 		return;
+// 	}
+
+// 	// @ts-expect-error
+// 	chrome.tabs.create({
+// 		url: 'https://magicboxpremium.com/extension/ytbooster/index.html'
+// 	});
+// });
+
+// @ts-expect-error
+chrome.runtime.setUninstallURL('https://magicboxpremium.com/extension/ytbooster/delete.html');

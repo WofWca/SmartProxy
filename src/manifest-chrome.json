@@ -1,17 +1,16 @@
 {
-	"name": "Обойти замедление YouTube",
-	"version": "1.5",
+	"name": "Обойти замедление YouTube. Ускорить Ютуб в России.",
+	"version": "1.5.1",
 	"manifest_version": 3,
 	"author": "Salar Khalilzadeh",
-	"description": "Обойдите замедление YouTube и ускорьте Ютуб в России. Наслаждайтесь высоким качеством видео без задержек и буферизации.",
+	"description": "Обойдите замедление YouTube и ускорьте Ютуб в России. Наслаждайтесь высокой скоростью, как раньше, до замедления.",
 	"homepage_url": "https://github.com/salarcode/SmartProxy",
 	"default_locale": "en",
 	"icons": {
-		"16": "icons/smartproxy-16.png",
-		"24": "icons/smartproxy-24.png",
-		"48": "icons/smartproxy-48.png",
-		"96": "icons/smartproxy-96.png",
-		"128": "icons/smartproxy-128.png"
+		"16": "icons/speed-16-16.png",
+		"32": "icons/speed-32-32.png",
+		"128": "icons/speed-128-128.png",
+		"512": "icons/speed-512-512.png"
 	},
 	"permissions": [
 		"proxy",
@@ -24,11 +23,10 @@
 	],
 	"action": {
 		"default_icon": {
-			"16": "icons/smartproxy-16.png",
-			"24": "icons/smartproxy-24.png",
-			"48": "icons/smartproxy-48.png",
-			"96": "icons/smartproxy-96.png",
-			"128": "icons/smartproxy-128.png"
+			"16": "icons/speed-16-16.png",
+			"32": "icons/speed-32-32.png",
+			"128": "icons/speed-128-128.png",
+			"512": "icons/speed-512-512.png"
 		}
 	},
 	"background": {
