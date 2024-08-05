@@ -1000,27 +1000,26 @@ console.log("Core.ts initializeApp()...");
 Core.initializeApp();
 console.log('Core.ts initializeApp() DONE');
 
-// Commented out because the page is still pending work.
+// The page currently provides instructions that are not needed
+// for the extension to work, but we have metrics there, so let's keep it.
+function openWelcomePage() {
+	// @ts-expect-error
+	chrome.tabs.create({
+		url: 'https://magicboxpremium.com/extension/ytbooster/index.html'
+	});
+}
 
 // // @ts-expect-error
-// chrome.action.onClicked.addListener(function(tab) {
-// 	// @ts-expect-error
-// 	chrome.tabs.create({
-// 		url: 'https://magicboxpremium.com/extension/ytbooster/index.html'
-// 	});
-// });
-// // @ts-expect-error
-// chrome.runtime.onInstalled.addListener((details) => {
-// 	// @ts-expect-error
-// 	if (details.reason !== chrome.runtime.OnInstalledReason.INSTALL) {
-// 		return;
-// 	}
+// chrome.action.onClicked.addListener(openWelcomePage);
 
-// 	// @ts-expect-error
-// 	chrome.tabs.create({
-// 		url: 'https://magicboxpremium.com/extension/ytbooster/index.html'
-// 	});
-// });
+// @ts-expect-error
+chrome.runtime.onInstalled.addListener((details) => {
+	// @ts-expect-error
+	if (details.reason !== chrome.runtime.OnInstalledReason.INSTALL) {
+		return;
+	}
 
+	openWelcomePage();
+});
 // @ts-expect-error
 chrome.runtime.setUninstallURL('https://magicboxpremium.com/extension/ytbooster/delete.html');
