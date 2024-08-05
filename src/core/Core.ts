@@ -55,6 +55,13 @@ const iconsLib = Icons;
 export class Core {
 	/** Start the application */
 	public static initializeApp() {
+		// Let's just clear storage, whatever. We don't really need it anyway,
+		// since users have no way to change settings.
+		// This is needed so that a random server is picked each time.
+		//
+		// Though remember that this is async, but it appears to work.
+		// @ts-expect-error
+		chrome.storage.local.clear()
 
 		Debug.disable(); // comment this for debugging
 		//Debug.enableDiagnostics(true); // uncomment for verbose logs

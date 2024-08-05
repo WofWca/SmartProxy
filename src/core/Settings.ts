@@ -32,7 +32,7 @@ import {
 	ProxyRule,
 	ProxyRulesSubscription,
 	ThemeType,
-	getOurProxyServer,
+	getOurRandomProxyServer,
 } from './definitions';
 import { Debug } from '../lib/Debug';
 import { SettingsOperation } from './SettingsOperation';
@@ -161,7 +161,7 @@ export class Settings {
 			config.activeProfileId = SmartProfileTypeBuiltinIds.SmartRules;
 		}
 		if (config['defaultProxyServerId'] == null) {
-			config.defaultProxyServerId = getOurProxyServer().id;
+			config.defaultProxyServerId = getOurRandomProxyServer().id;
 		}
 		if (config['options'] == null) {
 			config.options = new GeneralOptions();
@@ -176,7 +176,7 @@ export class Settings {
 			config.firstEverInstallNotified = false;
 		}
 		if (config['proxyServers'] == null || !Array.isArray(config.proxyServers)) {
-			config.proxyServers = [getOurProxyServer()];
+			config.proxyServers = [getOurRandomProxyServer()];
 		}
 		if (config['proxyProfiles'] == null || !Array.isArray(config.proxyProfiles)) {
 			// We modified `getBuiltinSmartProfiles()`

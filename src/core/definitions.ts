@@ -344,9 +344,9 @@ export class SettingsConfig implements Cloneable {
 	public syncHash: string = '';
 	public proxyProfiles: SmartProfile[] = getBuiltinSmartProfiles();
 	public activeProfileId: string = SmartProfileTypeBuiltinIds.SmartRules;
-	public defaultProxyServerId: string = getOurProxyServer().id;
+	public defaultProxyServerId: string = getOurRandomProxyServer().id;
 
-	public proxyServers: ProxyServer[] = [getOurProxyServer()];
+	public proxyServers: ProxyServer[] = [getOurRandomProxyServer()];
 	public proxyServerSubscriptions: ProxyServerSubscription[] = [];
 	public options: GeneralOptions;
 	public firstEverInstallNotified: boolean = false;
@@ -393,13 +393,32 @@ export class SettingsConfig implements Cloneable {
 		this.configVersion = source.configVersion;
 	}
 }
-export function getOurProxyServer() {
+
+const ourProxyServers = [
+	["194.60.134.221", 46750],
+	["194.164.34.231", 51711],
+	["38.180.115.144", 44957],
+] as const;
+
+// Keep in mind that the backgrouns script shuts down sometimes,
+// so this runs not just on first browser launch, but possibly more often.
+// Also keep in mind that if we ever introduce multiple scripts, this will be
+// returning a different server for each script.
+//
+// TODO make sure floating point error can't mess this up.
+// Though worst-case scenario is that the user will just restart the browser.
+const randomServerInd = Math.floor(ourProxyServers.length * Math.random());
+
+/**
+ * The server is picked upon script execution - not on every function call
+ */
+export function getOurRandomProxyServer() {
 	const ourProxyServer = new ProxyServer();
 
 	ourProxyServer.name = "Our default server";
 	ourProxyServer.id = ourProxyServer.name;
-	ourProxyServer.host = "194.60.134.221";
-	ourProxyServer.port = 46750;
+	ourProxyServer.host = ourProxyServers[randomServerInd][0];
+	ourProxyServer.port = ourProxyServers[randomServerInd][1];
 	ourProxyServer.protocol = "SOCKS5";
 	ourProxyServer.username = "";
 	ourProxyServer.password = "";
@@ -572,6 +591,7 @@ export function getBuiltinSmartProfiles(): SmartProfile[] {
 }
 function getOurProxyRules() {
 	const youtubeRule = new ProxyRule();
+	// TODO do we need to specify server here?
 	youtubeRule.autoGeneratePattern = true;
 	youtubeRule.ruleType = ProxyRuleType.DomainSubdomain;
 	youtubeRule.hostName = "youtube.com";
