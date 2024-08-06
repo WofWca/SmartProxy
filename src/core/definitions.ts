@@ -395,9 +395,7 @@ export class SettingsConfig implements Cloneable {
 }
 
 const ourProxyServers = [
-	["194.60.134.221", 46750],
-	["194.164.34.231", 51711],
-	["38.180.115.144", 44957],
+	["38.180.124.10", 30863],
 ] as const;
 
 // Keep in mind that the backgrouns script shuts down sometimes,
