@@ -607,7 +607,14 @@ function getOurProxyRules() {
 	googlevideoRule.hostName = "googlevideo.com";
 	youtubeRule.ruleSearch = "googlevideo.com";
 
-	return [youtubeRule, googlevideoRule];
+	// Thumbnails (and other stuff).
+	// Reviews on Chrome Web Store say that they are also throttled.
+	const ytimgRule = new ProxyRule();
+	ytimgRule.CopyFrom(youtubeRule);
+	googlevideoRule.hostName = "ytimg.com";
+	youtubeRule.ruleSearch = "ytimg.com";
+
+	return [youtubeRule, googlevideoRule, ytimgRule];
 }
 
 export function getSmartProfileTypeDefaultId(profileType: SmartProfileType) {
