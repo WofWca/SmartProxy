@@ -21,6 +21,7 @@ import { SettingsOperation } from "./SettingsOperation";
 import { RuleImporter } from "../lib/RuleImporter";
 import { ProxyEngine } from "./ProxyEngine";
 import { ImportedProxyRule, ProxyRulesSubscription, ProxyServer, SubscriptionStats } from "./definitions";
+import { Core } from "./Core";
 
 export class SubscriptionUpdater {
 	private static serverSubscriptionTimers: SubscriptionTimerType[] = [{ timerId: null, subscriptionId: null, refreshRate: null }];
@@ -164,10 +165,52 @@ export class SubscriptionUpdater {
 				if (response.success) {
 					let count = response.result.length;
 
+					const oldProxies = subscription.proxies;
 					subscription.proxies = response.result;
+					const newProxies = subscription.proxies;
 					subscription.totalCount = count;
 
 					SubscriptionStats.updateStats(subscription.stats, true);
+
+					/**
+					 * This only looks at proxy IDs. If let's say
+					 * only a proxy password changed, this will be false.
+					 *
+					 * Worst case scenario in this case is that the extension
+					 * will stop working until the browser is restarted.
+					 */
+					const didProxyListChange =
+						oldProxies.length !== newProxies.length ||
+						newProxies.some((newProxy) => {
+							const correspondingOldProxy = oldProxies.find(oldProxy => (
+								oldProxy.id === newProxy.id
+							));
+							return correspondingOldProxy == undefined;
+						});
+
+						if (didProxyListChange) {
+						// Switch the proxy to a random one
+						// so that the load is distributed between them equally.
+						//
+						// Keep in mind that we don't want to switch proxies too often
+						// as it drop existing connections, probably resulting in
+						// lags and fetch errors.
+
+						const randomProxyServerInd = Math.floor(
+							Math.random() * subscription.proxies.length
+						);
+						const newProxy = subscription.proxies[randomProxyServerInd];
+
+						// This is sorta ugly to call Core API from a static function,
+						// but after all in this "library" we change settings anyway.
+						// Might as well esnure that the new settings are actually applied.
+						// An alternative approach is to have a callback to Core,
+						// something like `onServerSubscriptionRead`.
+	
+						// This updates storage and actually sets the proxy in the browser.
+						Debug.log("Proxy list changed. Switching proxy to", newProxy);
+						Core.ChangeActiveProxy(newProxy);
+					}
 
 					SettingsOperation.saveProxyServerSubscriptions();
 					SettingsOperation.saveAllSync(false);

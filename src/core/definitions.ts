@@ -334,8 +334,6 @@ export class ProxyableLogDataType {
 	}
 }
 
-// TODO IDK if we need to modify this
-// or if everything should be done through `setDefaultSettings`
 export class SettingsConfig implements Cloneable {
 	constructor() { }
 	public product: string = 'SmartProxy';
@@ -344,9 +342,9 @@ export class SettingsConfig implements Cloneable {
 	public syncHash: string = '';
 	public proxyProfiles: SmartProfile[] = getBuiltinSmartProfiles();
 	public activeProfileId: string = SmartProfileTypeBuiltinIds.SmartRules;
-	public defaultProxyServerId: string = getOurRandomHardcodedProxyServer().id;
+	public defaultProxyServerId: string;
 
-	public proxyServers: ProxyServer[] = [getOurRandomHardcodedProxyServer()];
+	public proxyServers: ProxyServer[] = [];
 	public proxyServerSubscriptions: ProxyServerSubscription[] = [];
 	public options: GeneralOptions;
 	public firstEverInstallNotified: boolean = false;

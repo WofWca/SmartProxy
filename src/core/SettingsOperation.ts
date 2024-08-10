@@ -88,7 +88,15 @@ export class SettingsOperation {
 
 		if (destSettings.proxyServerSubscriptions && destSettings.proxyServerSubscriptions.length)
 			for (const destSubscription of destSettings.proxyServerSubscriptions) {
-				destSubscription.proxies = [];
+				// This line makes it remove all proxies unconditionally,
+				// until they're fetched again from the URL.
+				// We don't want this since the URL might get blocked
+				// and then the extension will have no proxies stored in it at all.
+				// https://github.com/salarcode/SmartProxy/issues/394
+				//
+				// In addition this affects our `didProxyListChange` logic.
+				// That becomes always `true` since the "old" list is always empty.
+				// destSubscription.proxies = [];
 
 				let srcSubscription = sourceSettings.proxyServerSubscriptions.find(x => x.name == destSubscription.name && x.url == destSubscription.url);
 				if (!srcSubscription)

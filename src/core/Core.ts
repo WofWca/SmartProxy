@@ -55,13 +55,19 @@ const iconsLib = Icons;
 export class Core {
 	/** Start the application */
 	public static initializeApp() {
-		// Let's just clear storage, whatever. We don't really need it anyway,
-		// since users have no way to change settings.
-		// This is needed so that a random server is picked each time.
+		// Just a migration from the previous version.
+		// This is not strictly necessary I think.
+		// Now the servers are stored in `proxyServerSubscriptions[0]`,
+		// and they're fetched by URL.
+		// `defaultProxyServerId` remains unchanged from the previous verision,
+		// and will be updated when the list is fetched.
 		//
-		// Though remember that this is async, but it appears to work.
+		// Let's not clear the storage entirely
+		// in case the proxy list URL is not available for whatever reason,
+		// so that the last selected (active) proxy's credentials
+		// remain in the list and can be used on service worker restart.
 		// @ts-expect-error
-		chrome.storage.local.clear()
+		chrome.storage.local.remove("proxyServers");
 
 		Debug.disable(); // comment this for debugging
 		//Debug.enableDiagnostics(true); // uncomment for verbose logs

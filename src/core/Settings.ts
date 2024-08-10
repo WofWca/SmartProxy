@@ -33,6 +33,8 @@ import {
 	ProxyRulesSubscription,
 	ThemeType,
 	getOurRandomHardcodedProxyServer,
+	ProxyServerSubscriptionFormat,
+	SpecialRequestApplyProxyMode,
 } from './definitions';
 import { Debug } from '../lib/Debug';
 import { SettingsOperation } from './SettingsOperation';
@@ -161,6 +163,7 @@ export class Settings {
 			config.activeProfileId = SmartProfileTypeBuiltinIds.SmartRules;
 		}
 		if (config['defaultProxyServerId'] == null) {
+			// We'll switch the proxy when we fetch the proxy list.
 			config.defaultProxyServerId = getOurRandomHardcodedProxyServer().id;
 		}
 		if (config['options'] == null) {
@@ -176,7 +179,7 @@ export class Settings {
 			config.firstEverInstallNotified = false;
 		}
 		if (config['proxyServers'] == null || !Array.isArray(config.proxyServers)) {
-			config.proxyServers = [getOurRandomHardcodedProxyServer()];
+			config.proxyServers = [];
 		}
 		if (config['proxyProfiles'] == null || !Array.isArray(config.proxyProfiles)) {
 			// We modified `getBuiltinSmartProfiles()`
@@ -185,8 +188,15 @@ export class Settings {
 		else
 			config.proxyProfiles = me.setDefaultSettingsSmartProfiles(config.proxyProfiles);
 
-		if (config['proxyServerSubscriptions'] == null || !Array.isArray(config.proxyServerSubscriptions)) {
-			config.proxyServerSubscriptions = [];
+		if (
+			config['proxyServerSubscriptions'] == null ||
+			!Array.isArray(config.proxyServerSubscriptions) ||
+			// A migration from the previous version,
+			// where `proxyServerSubscriptions` is empty and `proxyServers`
+			// is used instead.
+			config.proxyServerSubscriptions.length === 0
+		) {
+			config.proxyServerSubscriptions = [makeOurProxySubscription()];
 		}
 
 		PolyFill.getExtensionVersion((version: string) => {
@@ -620,3 +630,35 @@ export class Settings {
 }
 
 let me = Settings;
+
+function makeOurProxySubscription(): ProxyServerSubscription {
+	const subscription = new ProxyServerSubscription();
+
+	/** Copied from {@link readServerSubscriptionModel}. */
+
+	subscription.name = "Our proxy server subscription";
+
+	// The URL must have `Access-Control-Allow-Origin: *` set,
+	// otherwise we'd need to add it to `host_permissions` in the manifest:
+	// https://developer.chrome.com/docs/extensions/develop/concepts/network-requests
+	// The extension would be disabled for the users
+	// unless they give it the permission...
+	subscription.url = "https://raw.githubusercontent.com/WofWca/SpeedTubeAuxilaryData/master/data.dat";
+
+	subscription.enabled = true;
+	subscription.proxyProtocol = ""; // (Auto detect with HTTP fallback)
+	subscription.refreshRate = 60; // Minutes
+	subscription.obfuscation = "Base64";
+	subscription.format = ProxyServerSubscriptionFormat.Json;
+	// Whether to fetch the list through another proxy.
+	subscription.applyProxy = SpecialRequestApplyProxyMode.NoProxy;
+	subscription.username = "";
+	// BASE 64 string
+	subscription.password = "";
+
+	// Pre-fill with default server in case the proxy list URL is not available.
+	subscription.proxies = [getOurRandomHardcodedProxyServer()];
+	subscription.totalCount = 1;
+
+	return subscription;
+}
