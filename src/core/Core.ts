@@ -69,6 +69,10 @@ export class Core {
 		// @ts-expect-error
 		chrome.storage.local.remove("proxyServers");
 
+		// A migration from a previos version, to disable some unnecessary settings.
+		// @ts-expect-error
+		chrome.storage.local.remove("options");
+
 		Debug.disable(); // comment this for debugging
 		//Debug.enableDiagnostics(true); // uncomment for verbose logs
 

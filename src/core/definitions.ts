@@ -1,5 +1,5 @@
 ﻿import { Settings } from './Settings';
-import { api, environment } from '../lib/environment';
+import { api } from '../lib/environment';
 import { Utils } from '../lib/Utils';
 import { ProfileOperations } from './ProfileOperations';
 
@@ -649,15 +649,15 @@ export class GeneralOptions implements Cloneable, Comparable {
 	public syncSettings: boolean = false;
 	public syncActiveProfile: boolean = true;
 	public syncActiveProxy: boolean = true;
-	public detectRequestFailures: boolean = true;
-	public displayFailedOnBadge: boolean = true;
-	public displayAppliedProxyOnBadge: boolean = environment.initialConfig.displayTooltipOnBadge;
-	public displayMatchedRuleOnBadge: boolean = environment.initialConfig.displayTooltipOnBadge;
+	public detectRequestFailures: boolean = false;
+	public displayFailedOnBadge: boolean = false;
+	public displayAppliedProxyOnBadge: boolean = false;
+	public displayMatchedRuleOnBadge: boolean = false;
 	public refreshTabOnConfigChanges: boolean = false;
 	public proxyPerOrigin: boolean = true;
 	public activeIncognitoProfileId: string;
-	public enableShortcuts: boolean = true;
-	public shortcutNotification: boolean = true;
+	public enableShortcuts: boolean = false;
+	public shortcutNotification: boolean = false;
 	public themeType: ThemeType = ThemeType.Auto;
 	public themesLight: string;
 	public themesLightCustomUrl: string;
