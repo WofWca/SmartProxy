@@ -344,9 +344,9 @@ export class SettingsConfig implements Cloneable {
 	public syncHash: string = '';
 	public proxyProfiles: SmartProfile[] = getBuiltinSmartProfiles();
 	public activeProfileId: string = SmartProfileTypeBuiltinIds.SmartRules;
-	public defaultProxyServerId: string = getOurRandomProxyServer().id;
+	public defaultProxyServerId: string = getOurRandomHardcodedProxyServer().id;
 
-	public proxyServers: ProxyServer[] = [getOurRandomProxyServer()];
+	public proxyServers: ProxyServer[] = [getOurRandomHardcodedProxyServer()];
 	public proxyServerSubscriptions: ProxyServerSubscription[] = [];
 	public options: GeneralOptions;
 	public firstEverInstallNotified: boolean = false;
@@ -394,7 +394,7 @@ export class SettingsConfig implements Cloneable {
 	}
 }
 
-const ourProxyServers = [
+const ourHardcodedProxyServers = [
 	["38.180.124.10", 30863],
 ] as const;
 
@@ -405,18 +405,18 @@ const ourProxyServers = [
 //
 // TODO make sure floating point error can't mess this up.
 // Though worst-case scenario is that the user will just restart the browser.
-const randomServerInd = Math.floor(ourProxyServers.length * Math.random());
+const randomServerInd = Math.floor(ourHardcodedProxyServers.length * Math.random());
 
 /**
  * The server is picked upon script execution - not on every function call
  */
-export function getOurRandomProxyServer() {
+export function getOurRandomHardcodedProxyServer() {
 	const ourProxyServer = new ProxyServer();
 
 	ourProxyServer.name = "Our default server";
 	ourProxyServer.id = ourProxyServer.name;
-	ourProxyServer.host = ourProxyServers[randomServerInd][0];
-	ourProxyServer.port = ourProxyServers[randomServerInd][1];
+	ourProxyServer.host = ourHardcodedProxyServers[randomServerInd][0];
+	ourProxyServer.port = ourHardcodedProxyServers[randomServerInd][1];
 	ourProxyServer.protocol = "SOCKS5";
 	ourProxyServer.username = "";
 	ourProxyServer.password = "";
