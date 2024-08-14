@@ -17,7 +17,6 @@ document.addEventListener('DOMContentLoaded', () => {
 				? ('InternalProfile_SmartRules' as SmartProfileTypeBuiltinIds.SmartRules)
 				: ('InternalProfile_Direct' as SmartProfileTypeBuiltinIds.Direct),
 		};
-		// @ts-expect-error
 		chrome.runtime.sendMessage(message);
 
 		setUiToggledState(newIsExtensionOn);
@@ -26,11 +25,9 @@ document.addEventListener('DOMContentLoaded', () => {
 	// Read the toggled state from storage and watch for changes.
 	// TODO perf: do not wait for `DOMContentLoaded`.
 	const activeProfileIdKey: keyof Pick<SettingsConfig, 'activeProfileId'> = 'activeProfileId';
-	//@ts-expect-error
 	chrome.storage.local.get(activeProfileIdKey).then(({ activeProfileId }) => {
 		setUiToggledState(activeProfileId === ('InternalProfile_SmartRules' as SmartProfileTypeBuiltinIds.SmartRules));
 	});
-	//@ts-expect-error
 	chrome.storage.onChanged.addListener((changes) => {
 		if (changes[activeProfileIdKey]) {
 			setUiToggledState(
