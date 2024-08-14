@@ -22,6 +22,11 @@ let plugins = [
         }
       },
       { from: './src/icons', to: 'icons' },
+      { from: './src/ui-new', to: 'ui-new',
+        globOptions: {
+          ignore: ['**/*.ts']
+        }
+      },
       // {
       //   from: './src/ui', to: 'ui',
       //   globOptions: {
@@ -47,6 +52,7 @@ module.exports = function (args) {
 
   let codeEntries = {
     'core': [],
+    'ui-new/popup/index': './src/ui-new/popup/index.ts',
     // 'ui/code/popup': ['./src/ui/code/popup.ts', `./src/core/browsers/${browserType}.ts`],
     // 'ui/code/proxyable': ['./src/ui/code/proxyable.ts', `./src/core/browsers/${browserType}.ts`],
     // 'ui/code/settingsPage': ['./src/ui/code/settingsPage.ts', `./src/core/browsers/${browserType}.ts`],
