@@ -24,20 +24,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	// Read the toggled state from storage and watch for changes.
 	// TODO perf: do not wait for `DOMContentLoaded`.
-	const activeProfileIdKey: keyof Pick<SettingsConfig, 'activeProfileId'> = 'activeProfileId';
-	chrome.storage.local.get(activeProfileIdKey).then(({ activeProfileId }) => {
-		setUiToggledState(activeProfileId === ('InternalProfile_SmartRules' as SmartProfileTypeBuiltinIds.SmartRules));
+	let storageCache: Pick<SettingsConfig, 'activeProfileId'>;
+	const storageDefaultValues: typeof storageCache = {
+		activeProfileId: null,
+	};
+	chrome.storage.local.get(storageDefaultValues).then((storage: typeof storageCache) => {
+		storageCache = storage;
+		reactToNewState(storage);
 	});
 	chrome.storage.onChanged.addListener((changes, areanName) => {
 		if (areanName !== 'local') {
 			return;
 		}
-		if (changes[activeProfileIdKey]) {
-			setUiToggledState(
-				changes[activeProfileIdKey].newValue === ('InternalProfile_SmartRules' as SmartProfileTypeBuiltinIds.SmartRules),
-			);
+		for (const [key, change] of Object.entries(changes)) {
+			storageCache[key] = change.newValue;
 		}
+		reactToNewState(storageCache);
 	});
+
+	function reactToNewState(newState: typeof storageCache) {
+		setUiToggledState(newState.activeProfileId === ('InternalProfile_SmartRules' as SmartProfileTypeBuiltinIds.SmartRules));
+	}
 
 	function setUiToggledState(isExtensionOn: boolean): void {
 		toggleCheckbox.checked = isExtensionOn;
@@ -45,3 +52,4 @@ document.addEventListener('DOMContentLoaded', () => {
 		toggledStateText.innerText = isExtensionOn ? 'Включено' : 'Выключено';
 	}
 });
+
