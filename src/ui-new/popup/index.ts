@@ -28,7 +28,10 @@ document.addEventListener('DOMContentLoaded', () => {
 	chrome.storage.local.get(activeProfileIdKey).then(({ activeProfileId }) => {
 		setUiToggledState(activeProfileId === ('InternalProfile_SmartRules' as SmartProfileTypeBuiltinIds.SmartRules));
 	});
-	chrome.storage.onChanged.addListener((changes) => {
+	chrome.storage.onChanged.addListener((changes, areanName) => {
+		if (areanName !== 'local') {
+			return;
+		}
 		if (changes[activeProfileIdKey]) {
 			setUiToggledState(
 				changes[activeProfileIdKey].newValue === ('InternalProfile_SmartRules' as SmartProfileTypeBuiltinIds.SmartRules),
