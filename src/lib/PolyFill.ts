@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with SmartProxy.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { extraStorageKeys } from "../core/extraDefinitions";
 import { environment, api } from "./environment";
 
 export class PolyFill {
@@ -199,7 +200,22 @@ export class PolyFill {
 				.then(success, fail);
 		}
 	}
-	public static storageLocalSet(items: any, success?: Function, fail?: Function) {
+	public static storageLocalSet(items_: any, success?: Function, fail?: Function) {
+		// A stupid hack so that it doesn't touch our storage values.
+		// Because the core might cache our values,
+		// then call `saveAllLocal`, but they might be outdated
+		// Example where this is useful:
+		// `openedYoutubeVideoIds` might get changed by other scripts
+		// and then if the extension gets toggled,
+		// `ChangeActiveProfileId` will get called and it would reset
+		// `openedYoutubeVideoIds`.
+
+		const items = { ...items_ };
+		const ignoredKeys = extraStorageKeys;
+		for (const key of ignoredKeys) {
+			delete items[key];
+		}
+
 		if (environment.chrome) {
 			api.storage.local.set(items,
 				(response: any) => {

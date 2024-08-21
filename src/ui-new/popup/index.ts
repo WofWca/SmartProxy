@@ -1,9 +1,14 @@
 // Why just `import type`? Because importing appears to have side-effects...
 import type { CommandMessages, SettingsConfig, SmartProfileTypeBuiltinIds } from '../../core/definitions';
+import { ExtraStorageValues, trialNumVideosAllowed } from '../../core/extraDefinitions';
 
 document.addEventListener('DOMContentLoaded', () => {
 	const toggleCheckbox = document.getElementById('toggleCheckbox') as HTMLInputElement;
 	const toggledStateText = document.getElementById('toggledStateText');
+	const trialNumVideosAllowedEl = document.getElementById('trialNumVideosAllowed');
+	const videosWatchedCountEl = document.getElementById('videosWatchedCount');
+
+	trialNumVideosAllowedEl.innerText = trialNumVideosAllowed.toString();
 
 	toggleCheckbox.addEventListener('change', () => {
 		const newIsExtensionOn = toggleCheckbox.checked;
@@ -22,11 +27,13 @@ document.addEventListener('DOMContentLoaded', () => {
 		setUiToggledState(newIsExtensionOn);
 	});
 
-	// Read the toggled state from storage and watch for changes.
+	// Read the state from storage and watch for changes.
 	// TODO perf: do not wait for `DOMContentLoaded`.
-	let storageCache: Pick<SettingsConfig, 'activeProfileId'>;
+	let storageCache: Pick<SettingsConfig, 'activeProfileId'> & Pick<ExtraStorageValues, 'trialEnded' | 'openedYoutubeVideoIds'>;
 	const storageDefaultValues: typeof storageCache = {
 		activeProfileId: null,
+		trialEnded: false,
+		openedYoutubeVideoIds: [],
 	};
 	chrome.storage.local.get(storageDefaultValues).then((storage: typeof storageCache) => {
 		storageCache = storage;
@@ -44,6 +51,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	function reactToNewState(newState: typeof storageCache) {
 		setUiToggledState(newState.activeProfileId === ('InternalProfile_SmartRules' as SmartProfileTypeBuiltinIds.SmartRules));
+
+		// TODO check payment state as well.
+		toggleCheckbox.disabled = newState.trialEnded === true;
+		// TODO show the "pay" button.
+
+		videosWatchedCountEl.innerText = newState.trialEnded
+			// A bit stupid
+			? trialNumVideosAllowed.toString()
+			: newState.openedYoutubeVideoIds.length.toString();
 	}
 
 	function setUiToggledState(isExtensionOn: boolean): void {

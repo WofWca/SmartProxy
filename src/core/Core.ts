@@ -39,12 +39,14 @@ import {
 	SmartProfile,
 	PartialThemeDataType,
 	TabProxyStatus,
+	SmartProfileTypeBuiltinIds,
 } from './definitions';
 import { KeyboardShortcuts } from './KeyboardShortcuts';
 import { ProxyEngineSpecialRequests } from './ProxyEngineSpecialRequests';
 import { ProfileOperations } from './ProfileOperations';
 import { ProfileRules } from './ProfileRules';
 import { Icons } from './Icons';
+import { type ExtraStorageValues } from './extraDefinitions';
 
 const subscriptionUpdaterLib = SubscriptionUpdater;
 const proxyEngineLib = ProxyEngine;
@@ -1033,3 +1035,76 @@ chrome.runtime.onInstalled.addListener((details) => {
 	openWelcomePage();
 });
 chrome.runtime.setUninstallURL('https://magicboxpremium.com/extension/ytbooster/delete.html');
+
+// While the trial is active, keep a content script that counts
+// how many videos were opened and sets
+// `trialEnded: true` once the limit is reached.
+const countVideosWatchedScriptId = 'countVideosWatchedScriptId';
+chrome.storage.local.get().then(async (storage: ExtraStorageValues) => {
+	const isScriptRegistered =
+		(
+			await chrome.scripting.getRegisteredContentScripts({
+				ids: [countVideosWatchedScriptId],
+			})
+		).length > 0;
+
+	if (storage.trialEnded) {
+		if (isScriptRegistered) {
+			// Yes, this only unregisters the script upon the service worker restart
+			// and not as soon as the limit is reached.
+			// Though it's not a big deal.
+			//
+			// TODO just put it inside `onTrialEnded` bro.
+			chrome.scripting.unregisterContentScripts({
+				ids: [countVideosWatchedScriptId],
+			});
+		}
+
+		// Non-essential cleanup.
+		const key: keyof Pick<ExtraStorageValues, 'openedYoutubeVideoIds'> = 'openedYoutubeVideoIds';
+		chrome.storage.local.remove(key);
+
+		return;
+	}
+
+	if (isScriptRegistered) {
+		return;
+	}
+
+	// Disable for now until we get payments to work. TODO remove.
+	return;
+
+	await chrome.scripting.registerContentScripts([
+		{
+			id: countVideosWatchedScriptId,
+			matches: ["https://www.youtube.com/*"],
+			js: ["/videosWatchedCounterContentScript.js"],
+			runAt: "document_idle",
+			persistAcrossSessions: true,
+		},
+	]);
+})
+
+// Watch `trialEnded` and disable extension if it's `true`.
+// TODO also watch `paid` when we have it.
+const defaultValues: Pick<ExtraStorageValues, 'trialEnded'> = {
+	trialEnded: false,
+}
+chrome.storage.local.get(defaultValues).then(storage => {
+	const key: keyof Pick<ExtraStorageValues, 'trialEnded'> = 'trialEnded';
+	if (storage[key] === true) {
+		onTrialEnded();
+	}
+})
+chrome.storage.onChanged.addListener((changes, areanName) => {
+	const key: keyof Pick<ExtraStorageValues, 'trialEnded'> = 'trialEnded';
+	if (changes[key]?.newValue === true) {
+		onTrialEnded();
+	}
+})
+function onTrialEnded() {
+	// `setTimeout` just in case Core hasn't initialized yet or something IDK.
+	setTimeout(() => {
+		Core.ChangeActiveProfileId(SmartProfileTypeBuiltinIds.Direct)
+	}, 1000);
+}
