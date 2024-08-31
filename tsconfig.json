@@ -10,7 +10,9 @@
 		"target": "ES2021",
 		"lib": [ "ES2021", "ESNext", "dom" ],
 		"strictNullChecks": false,
-		"noUnusedLocals": true
+		"noUnusedLocals": true,
+		"moduleResolution": "nodenext",
+		"module": "NodeNext"
 	},
 	"exclude": [
 		"node_modules",

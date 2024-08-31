@@ -87,16 +87,32 @@
       color: #64FFA2;
     }
 
-    .bottom-button {
+    .button {
+      border: none;
+      cursor: pointer;
       margin: 0.25rem;
       padding: 0.5rem 1rem;
       line-height: 1;
-      background-color: #363641;
       border-radius: 99999rem;
       font-size: 0.75rem;
-      color: #B2B2C0;
       text-decoration: none;
 
+      font-weight: 500;
+    }
+
+    #buyButton {
+      background: linear-gradient(158.91deg, #FF6B00 0.7%, #A40A00 73.31%);
+    }
+    #buyButton:hover, #buyButton:focus {
+      background: linear-gradient(160.31deg, #FF9900 13.18%, #CF0D00 93%);
+    }
+    #buyButton:active {
+      background: #AF1701;
+    }
+
+    .bottom-button {
+      background-color: #363641;
+      color: #B2B2C0;
       transition-property: color, background-color;
       transition-duration: 0.05s;
       transition-timing-function: ease-out;
@@ -157,6 +173,25 @@
         </svg>
       </a>
     </div>
+    <section
+      style="
+        /* display: none; */
+        text-align: center;
+        background-color: #FFFFFF12;
+        border-radius: 0.625rem;
+      "
+    >
+      <!-- TODO add that crown icon according to the mockup. -->
+      <button
+        type="button"
+        id="buyButton"
+        class="button"
+        style="
+          margin: 1rem 0;
+        "
+      >Купить подписку</button>
+
+    </section>
     <h1
       style="
         --header-font-size: 2rem;
@@ -214,7 +249,7 @@
       "
     >
       <!-- <a
-        class="bottom-button"
+        class="button bottom-button"
       >
         <span>Оценить нас</span>
         <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -225,7 +260,7 @@
         </svg>
       </a> -->
       <a
-        class="bottom-button"
+        class="button bottom-button"
         href="https://magicboxpremium.com/extension/ytbooster/popup-tgchannel-link.html"
         target="_blank"
         rel="extenral noopener noreferrer"
@@ -236,7 +271,7 @@
         </svg>
       </a>
       <a
-        class="bottom-button"
+        class="button bottom-button"
         href="https://magicboxpremium.com/extension/ytbooster/popup-support-link.html"
         target="_blank"
         rel="extenral noopener noreferrer"

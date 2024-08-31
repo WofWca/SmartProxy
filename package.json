@@ -8,6 +8,7 @@
     "copy-webpack-plugin": "^11.0.0",
     "decompress": "^4.2.1",
     "eslint": "^8.6.0",
+    "patch-package": "^8.0.0",
     "terser-webpack-plugin": "^5.3.6",
     "ts-loader": "^9.4.2",
     "tsc": "^2.0.4",
@@ -17,6 +18,7 @@
     "webpack-cli": "^5.0.1"
   },
   "scripts": {
+    "prepare": "patch-package",
     "lint": "eslint ./src",
     "build": "webpack --env browser=chrome",
     "build-ff": "webpack --env browser=firefox",
@@ -37,6 +39,7 @@
   },
   "license": "GPL-3.0",
   "dependencies": {
+    "extpay": "^3.0.7",
     "pako": "^2.1.0"
   }
 }

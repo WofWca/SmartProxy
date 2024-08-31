@@ -47,6 +47,7 @@ import { ProfileOperations } from './ProfileOperations';
 import { ProfileRules } from './ProfileRules';
 import { Icons } from './Icons';
 import { type ExtraStorageValues } from './extraDefinitions';
+import ExtPay from "extpay";
 
 const subscriptionUpdaterLib = SubscriptionUpdater;
 const proxyEngineLib = ProxyEngine;
@@ -577,6 +578,10 @@ export class Core {
 					sendResponse(result);
 				}
 			}
+			case CommandMessages.OpenExtPayPaymentPage: {
+				extpay.openPaymentPage()
+				break;
+			}
 			default:
 				{
 				}
@@ -1035,6 +1040,15 @@ chrome.runtime.onInstalled.addListener((details) => {
 	openWelcomePage();
 });
 chrome.runtime.setUninstallURL('https://magicboxpremium.com/extension/ytbooster/delete.html');
+
+// const extpay = ExtPay('dummy_id');
+const extpay = ExtPay('dkuvofduqgcezwnmbdhqsbrufvynpeqkdkga');
+extpay.startBackground();
+
+;(async () => {
+	console.log(await extpay.getUser())
+})()
+extpay.openPaymentPage()
 
 // While the trial is active, keep a content script that counts
 // how many videos were opened and sets

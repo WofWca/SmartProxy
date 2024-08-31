@@ -175,6 +175,7 @@ export class CommandMessages {
 	public static DebugEnableDiagnostics = 'Debug_EnableDiagnostics';
 	public static DebugGetDiagnosticsLogs = 'Debug_GetDiagnosticsLogs';
 
+	public static OpenExtPayPaymentPage = 'OpenExtPayPaymentPage';
 }
 export enum BrowserProxySettingsType {
 	none = 'none',

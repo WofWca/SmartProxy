@@ -210,6 +210,8 @@ export class PolyFill {
 		// `ChangeActiveProfileId` will get called and it would reset
 		// `openedYoutubeVideoIds`.
 
+		// TODO do we need to add ExtPay keys as well??
+
 		const items = { ...items_ };
 		const ignoredKeys = extraStorageKeys;
 		for (const key of ignoredKeys) {
